@@ -4,10 +4,11 @@
 #include "mesh.h"
 
 
-void slowHull(float **mesh,int cnt,Point *sites)
+void slowHull(Domain *D,float **mesh,int cnt,Point *sites)
 {
    int maxX,maxY,x,y,startId,n,tmpStartId,targetId;
-   int findTargetId(Point *sites,int tmpStartId,int cnt);
+   int findTarget(Point *sites,int start,int cnt);
+   Edge *New;
 
    //find start point
    maxX=-1;
@@ -24,58 +25,68 @@ void slowHull(float **mesh,int cnt,Point *sites)
    }
    tmpStartId=startId;
 
-   if(tmpStartId==0) targetId=1;
-   else              targetId=0;
-   while(startId!=targetId)  {
-     targetId=findTargetId(sites,tmpStartId,cnt);
-     printf("targetId=%d, startId=%d\n",targetId,startId);
+   D->hull = (Hull *)malloc(sizeof(Hull ));
+
+   while(startId!=targetId)   {
+     targetId=findTarget(sites,tmpStartId,cnt);
+     New = (Edge *)malloc(sizeof(Edge ));
+     New->next = D->hull->eg;
+     D->hull->eg = New;
+ 
+     New->start=tmpStartId;
+     New->end=targetId;
      tmpStartId=targetId;
    }
-/*
-       //save line
-       startI=sites[tmpStartId].x;
-       startJ=sites[tmpStartId].y;
-       endI=sites[targetId].x;
-       endJ=sites[targetId].y;
-       for(i=startI; i<=endI; i++)
-         for(j=startJ; j<=endJ; j++)
-           mesh[i][j]=1;
-   }	//end of while
-*/      
-//   printf("maxX=%g, maxY=%g, id=%d\n",maxX,maxY,startId);
 
 }
 
-int findTargetId(Point *sites,int tmpStartId,int cnt)
+int findTarget(Point *sites,int start,int cnt)
 {
-   int left,scanId,n,targetId;
-   int startX,startY,targetX,targetY,testX,testY;
-   float alpha,testA;
+  int findFlag,target,left,n;
+  void findLeft(Point *sites,int tmpStartId,int targetId,int n,int *left);
 
-   left=1;
-   scanId=0;
-   while(left==1)  {
-     if(scanId!=tmpStartId)  {
-       startX=sites[tmpStartId].x;
-       startY=sites[tmpStartId].y;
-       targetX=sites[scanId].x;
-       targetY=sites[scanId].y;
-       alpha=(targetY-startY)/(targetX-startX);
+  findFlag=0;
+  target=0;
+  while(findFlag==0 && target<cnt)  {
+    left=0;
+    if(start!=target) { 
+      for(n=0; n<cnt; n++)  
+	if(n!=start && n!=target)  
+	  findLeft(sites,start,target,n,&left);
+      if(left==0) findFlag=1;
+    }
+    target++;
+  }
 
-       for(n=0; n<cnt; n++)  {
-         if(n!=scanId && n!=tmpStartId)  {
-           testX=sites[n].x;
-           testY=sites[n].y;
-           testA=(testY-startY)/(testX-startX);
-           if(testA>alpha)   left=1;        
-           else  {
-             left=0;
-             targetId=n;
-           }
-         }
-       }
-     }      
+  return target-1;
+}
+
+
+void findLeft(Point *sites,int tmpStartId,int targetId,int n,int *left)
+{
+   int startX,startY,targetX,targetY,x0,y0,x,y;
+   float alpha;
+
+   startX=sites[tmpStartId].x;
+   startY=sites[tmpStartId].y;
+   targetX=sites[targetId].x;
+   targetY=sites[targetId].y;
+
+   x0=sites[n].x;
+   y0=sites[n].y;
+   if(startX<targetX)  {
+     alpha=(float)(targetY-startY)/(float)(targetX-startX);
+     y=alpha*(x0-startX)+startY;
+     if(y0>y) *left=1;
+   }
+   else if(startX>targetX)  {
+     alpha=(float)(targetY-startY)/(float)(targetX-startX);
+     y=alpha*(x0-startX)+startY;
+     if(y0<y) *left=1;
+   }
+   else  {
+     if(x0<startX)   *left=1;
    }
 
-   return targetId;
+//   printf("start=%d,targetId=%d,n=%d,left=%d\n",tmpStartId,targetId,n,*left);
 }
