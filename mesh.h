@@ -1,3 +1,4 @@
+#define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
 
 typedef struct _Domain
 {

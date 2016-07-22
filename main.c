@@ -51,8 +51,9 @@ int main(int argc, char *argv[])
      for(j=0; j<ny; j++)
        mesh[i][j]=0.0;
    
-   slowHull(D,mesh,cnt,sites);
-
+//   slowHull(D,mesh,cnt,sites);
+   fastHull(D,cnt,sites);
+/*
    eg=D->hull->eg;
    while(eg)  {
      istart=sites[eg->start].x;
@@ -69,7 +70,7 @@ int main(int argc, char *argv[])
      }
      eg=eg->next;
    }
-
+*/
 
    //print
    sprintf(fileName,"lala");
@@ -83,7 +84,7 @@ int main(int argc, char *argv[])
 
    //clear
    free(sites);
-   clean(D);
+//   clean(D);
    
    
    return 0;

@@ -1,6 +1,6 @@
 EXEC = show
 CC = gcc
-OBJS = main.o slowHull.o clean.o
+OBJS = main.o slowHull.o clean.o util.o fastHull.o
 
 INCL = mesh.h
 LIBS = -lm
