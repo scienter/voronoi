@@ -3,6 +3,8 @@
 #include <math.h>
 #include "mesh.h"
 
+
+
 void bubble_sort(Point *sites,int cnt)
 {
   int i,j,start,end,tempStart,tempEnd,flag=1;
@@ -67,4 +69,13 @@ void swap(Point *p1, Point *p2)
   p1->y=p2->y;
   p2->x=tempX;
   p2->y=tempY;
+}
+
+void swapInt(int *x1,int *x2)
+{
+  int temp;
+  
+  temp=*x1;
+  *x1=*x2;
+  *x2=temp;
 }

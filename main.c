@@ -6,17 +6,18 @@
 
 int main(int argc, char *argv[])
 {
-   int i,j,n,nx,ny,cnt=0;
+   int i,j,n,nx,ny,cnt=0,totalCnt;
    int istart,iend,jstart,jend,x,y;
    float minX,maxX,minY,maxY,alpha;
    float **mesh;
    char fileName[100];
    FILE *in,*out;
+   void slowHull(Domain *D,float **mesh,int cnt,Point *sites);
+   void createQue(Domain *D,Point *sites,int cnt);
+   void clean(Domain *D);
    Point *sites;
    Domain *D;
    Edge *eg;
-   void slowHull(Domain *D,float **mesh,int cnt,Point *sites);
-   void clean(Domain *D);
 
 
    if(argc < 1)
@@ -52,7 +53,11 @@ int main(int argc, char *argv[])
        mesh[i][j]=0.0;
    
 //   slowHull(D,mesh,cnt,sites);
-   fastHull(D,cnt,sites);
+//   fastHull(D,cnt,sites);
+   totalCnt=cnt/2;
+   D->queList = (QueElement *)malloc(totalCnt*sizeof(QueElement ));  
+
+   createQue(D,sites,cnt);
 /*
    eg=D->hull->eg;
    while(eg)  {

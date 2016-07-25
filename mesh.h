@@ -4,6 +4,7 @@ typedef struct _Domain
 {
 
    struct _Hull *hull;
+   struct _QueElement *queList;
 }   Domain;
 
 
@@ -29,3 +30,23 @@ typedef struct _Edge
    
    struct _Edge *next;
 }   Edge;
+
+
+typedef struct _QueElement
+{
+   int start;
+   int end;
+   int increment;
+}   QueElement;
+
+
+typedef struct _Segment
+{
+   int x1;
+   int y1;
+   int x2;
+   int y2;
+}   Segment;
+
+
+
