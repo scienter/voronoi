@@ -1,4 +1,4 @@
-#define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
+#define SWAP(a,b) {typeof(a) SWAP = a; a=b; b = SWAP;} while (0)
 
 typedef struct _Domain
 {
@@ -7,6 +7,13 @@ typedef struct _Domain
    struct _QueElement *queList;
 }   Domain;
 
+typedef struct lnkList
+{
+   int x;
+   int y;
+   int seg;
+
+}   lnkList;
 
 
 

@@ -3,6 +3,59 @@
 #include <math.h>
 #include "mesh.h"
 
+void segment_sort(lnkList *lnk,int cnt)
+{
+  int i,j,start,end,tempStart,tempEnd,flag=1;
+  void seg_sortX(lnkList *lnk,int start,int end);
+
+//  element next;
+  for(i=cnt-1; flag>0; i--) { 
+    flag = 0;
+    for(j=0; j<i; j++) {
+      if(lnk[j].y < lnk[j+1].y) {
+        SWAP(lnk[j],lnk[j+1]);
+        flag = 1; 
+      }
+    }
+  }
+
+  flag=0;
+  tempStart=start=cnt;
+  tempEnd=end=0;
+  for(i=0; i<cnt-1; i++)  {
+    if(lnk[i].y==lnk[i+1].y)  {
+      tempStart=i;
+      tempEnd=i+1;
+      flag=1;
+    } 
+    if(tempStart<start) start=tempStart;
+    if(tempEnd>end)     end=tempEnd;
+
+    if(flag==1)  {
+      seg_sortX(lnk,start,end);
+      flag=0;
+    }
+  }
+
+}
+
+void seg_sortX(lnkList *lnk,int start,int end)
+{
+  int i, j;
+  int flag = 1;
+
+//  element next;
+  for(i=end; flag>0; i--) { 
+    flag = 0;
+    for(j=start; j<i; j++) {
+      if(lnk[j].x > lnk[j+1].x) {
+        SWAP(lnk[j],lnk[j+1]);
+        flag = 1; 
+      }
+    }
+  }
+}
+
 
 
 void bubble_sort(Point *sites,int cnt)

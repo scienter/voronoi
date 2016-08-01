@@ -2,16 +2,21 @@
 #include <stdlib.h>
 #include <math.h>
 #include "mesh.h"
-/*
-void enqueue(QueElement *queList,int *rear,QueElement *item,int totalCnt)
+
+
+void enqueue(lnkList *queue,int front,int *rear,lnkList *item,int totalCnt)
 {
-  if(*rear==totalCnt-1)  {
+  int tmp;
+
+  tmp=(*rear+1)%totalCnt;
+  if(front==tmp)  {
     printf("Queue is full\n");
     return;
-  }
-  queList[++*rear]=item;
+  }  else
+    queue[++*rear]=*item;
 }
 
+/*
 int isEmpty(int *front, int rear)  
 {
   if(*front==rear) return 1;
@@ -45,6 +50,7 @@ QueElement quePeek(int *front, int rear)
   else return queList[front+1];
 }
 */
+
 void createQue(Domain *D,Point *sites,int cnt)
 {
   int sudoCnt,totalCnt,front,rear,n,i;
@@ -52,15 +58,18 @@ void createQue(Domain *D,Point *sites,int cnt)
   float alpha;
   FILE *out;
   char fileName[100];
-  void swapInt(int *x1,int *x2);
   Segment *segment;
+  lnkList *lnk,*queue;
+  void segment_sort(lnkList *lnk,int cnt);
+  void enqueue(lnkList *queue,int front,int *rear,lnkList *item,int totalCnt);
+
 
 
 
   //initiate queList
   totalCnt=cnt/2;
-  front=-1;
-  rear=-1;
+  front=0;
+  rear=0;
 
   //create segment
   segment = (Segment *)malloc(totalCnt*sizeof(Segment ));  
@@ -82,6 +91,33 @@ void createQue(Domain *D,Point *sites,int cnt)
       segment[n/2].y2=y1;
     }
   }
+
+  //sorting segment
+  lnk = (lnkList *)malloc(totalCnt*sizeof(lnkList ));  
+  queue = (lnkList *)malloc((totalCnt+1)*sizeof(lnkList ));  
+  for(i=0; i<totalCnt; i++)  {
+    x1=segment[i].x1;
+    y1=segment[i].y1;
+    x2=segment[i].x2;
+    y2=segment[i].y2;
+    if(y2>y1) {
+      lnk[i].y=y2;
+      lnk[i].x=x2;
+    }  else  {
+      lnk[i].y=y1;
+      lnk[i].x=x1;
+    }
+    lnk[i].seg=i;  
+  }
+  segment_sort(lnk,totalCnt);
+
+  //making queue  
+  for(i=0; i<totalCnt; i++)
+    enqueue(queue,front,&rear,&lnk[i],totalCnt+1);
+
+  for(i=1; i<=totalCnt; i++)
+    printf("i=%d, x=%d, y=%d, front=%d, rear=%d\n",i,queue[i].x,queue[i].y,front,rear);
+  
 
   sprintf(fileName,"segment");
   out=fopen(fileName,"w");
